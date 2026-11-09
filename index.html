@@ -80,7 +80,7 @@ section{position:relative}
   background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));transition:width .1s linear}
 
 /* ===================== reveal ===================== */
-.reveal{opacity:0;transform:translateY(30px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
 .reveal.in{opacity:1;transform:none}
 .reveal.fade-l{transform:translateX(-40px)} .reveal.fade-l.in{transform:none}
 .reveal.fade-r{transform:translateX(40px)} .reveal.fade-r.in{transform:none}
@@ -842,8 +842,13 @@ function observeReveals(){
   if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
   if(revealIO) revealIO.disconnect();
   revealIO=new IntersectionObserver(ents=>{
-    ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); revealIO.unobserve(en.target); } });
-  },{rootMargin:'0px 0px -7% 0px',threshold:.12});
+    ents.forEach(en=>{
+      // animate in whenever a section scrolls into view (down OR up),
+      // and reset once it fully leaves so the motion plays again next time
+      if(en.isIntersecting) en.target.classList.add('in');
+      else en.target.classList.remove('in');
+    });
+  },{rootMargin:'-6% 0px -10% 0px',threshold:0});
   els.forEach(e=>revealIO.observe(e));
 }
 
